@@ -3,7 +3,12 @@ class QuickOsc
     @client = OSC::Client.new(addr, port)  
   end
 
-  def send(path, data)
-    @client.send(OSC::Message.new(path, data)) 
+  def send(path, *args)
+    begin
+      msg = OSC::Message.new(path, *args)
+      @client.send(msg)
+    rescue Errno::ECONNREFUSED
+      false
+    end
   end
 end
