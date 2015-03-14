@@ -1,6 +1,9 @@
-class QuickOsc
-  def initialize(addr, port)
-    @client = OSC::Client.new(addr, port)  
+class Clients::Client
+  include Listener
+
+  def initialize(server, ip, port)
+    @server = server
+    @client = OSC::Client.new(ip, port)  
   end
 
   def send(path, *args)
