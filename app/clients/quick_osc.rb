@@ -1,6 +1,6 @@
 class Clients::QuickOsc < Clients::Client
   def bind
-    @server.add_method "/.*" do |msg|
+    on "/.*" do |msg|
       puts "listening: #{msg.inspect}"
     end
   end
