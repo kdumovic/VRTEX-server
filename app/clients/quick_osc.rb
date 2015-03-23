@@ -1,5 +1,5 @@
 class Clients::QuickOsc < Clients::Client
-  def bind
+  def listen
     on "/.*" do |msg|
       puts "listening: #{msg.inspect}"
     end

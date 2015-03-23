@@ -21,7 +21,6 @@ end
     klass = Kernel.const_get("Clients::#{client_type}")
     puts "Registering #{klass} on #{full_ip}"
     client = klass.new(@server, msg.ip_address, ip_port)
-    client.bind
     clients[full_ip] = client
   end
 end
