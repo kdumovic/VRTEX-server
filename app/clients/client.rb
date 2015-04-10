@@ -1,6 +1,6 @@
 class Clients::Client
-  def initialize(server, ip, port)
-    @server = server
+  def initialize(game, ip, port)
+    @game = game
     @client = OSC::Client.new(ip, port)  
     listen
   end
@@ -12,7 +12,7 @@ class Clients::Client
   private
 
   def on(address)
-    @server.add_method address do |msg|
+    @game.add_method address do |msg|
       yield(msg)
     end
   end
