@@ -4,6 +4,7 @@ require "osc-ruby/em_server"
 port = (ARGF.argv[0] || 4000).to_i
 @server = OSC::EMServer.new(port)
 @game = Game.new(@server)
+@game.start
 
 puts "Running OSC server on port #{port}. CTRL-C to stop..."
 

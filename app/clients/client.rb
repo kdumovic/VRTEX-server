@@ -9,12 +9,12 @@ class Clients::Client
     raise "Not implemented"
   end
 
-  private
+  def game
+    @game
+  end
 
-  def on(address)
-    @game.add_method address do |msg|
-      yield(msg)
-    end
+  def current_stage
+    game.current_stage
   end
 
   def deliver(path, *args)
@@ -23,6 +23,14 @@ class Clients::Client
       @client.send(msg)
     rescue Errno::ECONNREFUSED
       false
+    end
+  end
+
+  private
+
+  def on(address)
+    @game.add_method address do |msg|
+      yield(msg)
     end
   end
 end
