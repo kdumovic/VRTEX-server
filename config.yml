@@ -1,0 +1,7 @@
+devices:
+  hud:
+    ip: 127.0.0.1
+    port: 3334
+  android:
+    ip: 10.34.161.223
+    port: 8090

@@ -15,19 +15,12 @@ Usage
 
     ruby server.rb [port]      # defaults to 4000
 
-To connect to the server from a client, send an OSC message to address
-`/register/[ClientType]` where `[ClientType]` is the class name of a client in
-`app/clients`. An example follows below:
-
-    /register/QuickOsc # Registers a new client of type Clients::QuickOsc
-
-Contributing
-------------
-
-Code for interacting with a given client lives in the `app/clients` directory.
-
-All clients must inhereit from `Clients::Client` and implement the `bind`
-method. See `Clients::QuickOsc` for an example of how to implement `bind`.
+The server essentially acts as a router between UE4 and other VRTEX devices.
+Each device to be routed for must be specified with a ip/port in config.yml.
+Upon declaration, the server will listen on the OSC address namespace
+"/{device name}/.\*" and forward along messages to the corresponding devices.
+Any message with an OSC address that doesn't correspond to a device name will
+be dropped.
 
 Credits
 -------

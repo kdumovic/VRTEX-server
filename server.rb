@@ -1,28 +1,32 @@
 require "application"
+require "yaml"
 require "osc-ruby/em_server"
 
 port = (ARGF.argv[0] || 4000).to_i
 @server = OSC::EMServer.new(port)
-@game = Game.new(@server)
-@game.start
+
+config = YAML.load_file("./config.yml")
+clients = {}
+
+config["devices"].each do |device, ip_port|
+  clients[device] = OSC::Client.new(
+    config["devices"][device]["ip"],
+    config["devices"][device]["port"],
+  )
+end
 
 puts "Running OSC server on port #{port}. CTRL-C to stop..."
+puts "Configured for the following clients:", clients.keys
 
-@server.add_method '/.*' do |msg|
-  puts msg.inspect
-  puts "#{msg.ip_address}:#{msg.ip_port} -- #{msg.address} -- #{msg.to_a}"
-end
-
-@server.add_method '/register/.*' do |msg|
-  match_data = msg.address.match(/\/register\/(.*)\/(\d*)/)
-  client_type = match_data[1]
-  ip_port = match_data[2]
-  full_ip = "#{msg.ip_address}:#{ip_port}"
-  if !@game.include?(full_ip)
-    klass = Kernel.const_get("Clients::#{client_type}")
-    puts "Registering #{klass} on #{full_ip}"
-    client = klass.new(@game, msg.ip_address, ip_port)
-    @game[full_ip] = client
+clients.each do |name, client|
+  @server.add_method "/#{name}/.*" do |msg|
+    begin
+      client.send(msg)
+    rescue Errno::ECONNREFUSED
+      puts "Failed to send msg to #{name}"
+      false
+    end
   end
 end
+
 @server.run
